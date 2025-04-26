@@ -35,8 +35,15 @@ class Block:
         if self.rotation_state==0:
             self.rotation_state=len(self.cells)-1
 
-    def draw(self,screen):
+    def draw(self,screen, x_offset=0, y_offset=0):
         tiles=self.get_cell_position()
         for tile in tiles:
-            tile_rect=pygame.Rect(tile.col*self.cell_size+1,tile.row*self.cell_size+1,self.cell_size-1,self.cell_size-1)
+            tile_rect=pygame.Rect(tile.col*self.cell_size+1 + x_offset, tile.row*self.cell_size+1 + y_offset, self.cell_size-1, self.cell_size-1)
+            # Draw main block
             pygame.draw.rect(screen,self.colors[self.id],tile_rect)
+            # Draw border outline
+            pygame.draw.rect(screen,(255,255,255),tile_rect,2)
+            # Draw shading effect (darker bottom and right edges)
+            shade_color = (max(self.colors[self.id][0]-40,0), max(self.colors[self.id][1]-40,0), max(self.colors[self.id][2]-40,0))
+            pygame.draw.line(screen, shade_color, (tile_rect.left, tile_rect.bottom-1), (tile_rect.right-1, tile_rect.bottom-1))  # bottom edge
+            pygame.draw.line(screen, shade_color, (tile_rect.right-1, tile_rect.top), (tile_rect.right-1, tile_rect.bottom-1))  # right edge
